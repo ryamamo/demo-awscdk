@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import { Vpc } from './resource/vpc';
 import { Subnet } from './resource/subnet';
 import { InternetGateway } from './resource/internetGateway';
+import { ElasticIp } from './resource/elasticIp';
 
 export class DemoStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -16,5 +17,8 @@ export class DemoStack extends Stack {
 
     const igw = new InternetGateway(vpc.vpc);
     igw.createResources(this, props);
+
+    const ngw = new ElasticIp();
+    ngw.createResources(this, props)
   }
 }
