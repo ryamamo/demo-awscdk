@@ -11,6 +11,6 @@ export class DemoStack extends Stack {
     vpc.createResources(this, props);
 
     const subnet = new Subnet(vpc.vpc);
-    subnet.createResource(this, props);
+    subnet.createResources(this, props);
   }
 }
