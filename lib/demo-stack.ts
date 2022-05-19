@@ -3,7 +3,7 @@ import { Construct } from 'constructs';
 import { Vpc } from './resource/vpc';
 import { Subnet } from './resource/subnet';
 
-export class VpcStack extends Stack {
+export class DemoStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
     
