@@ -70,7 +70,7 @@ export class Subnet extends Resource {
 
     createResources(scope: Construct, props?: StackProps) {
         for (const resourceInfo of this.resourcesInfo) {
-            const subnet = this.createSubnet(scope, resourceInfo);
+            const subnet = this.createSubnet(scope, resourceInfo, props);
             resourceInfo.assign(subnet);
         }
     }
