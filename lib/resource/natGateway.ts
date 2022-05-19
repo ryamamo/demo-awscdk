@@ -60,7 +60,7 @@ export class NatGateway extends Resource {
         const natGateway = new CfnNatGateway(scope, resourceInfo.id, {
             allocationId: resourceInfo.allocationId(),
             subnetId: resourceInfo.subnetId(),
-            tags: [{ key: 'Name', value: this.createResourceName(scope, resourceInfo.resourceName) }]
+            tags: [{ key: 'Name', value: this.createResourceName(scope, resourceInfo.resourceName, props) }]
         });
 
         return natGateway;
