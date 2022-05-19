@@ -4,6 +4,7 @@ import { Vpc } from './resource/vpc';
 import { Subnet } from './resource/subnet';
 import { InternetGateway } from './resource/internetGateway';
 import { ElasticIp } from './resource/elasticIp';
+import { NatGateway } from './resource/natGateway';
 
 export class DemoStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -15,10 +16,13 @@ export class DemoStack extends Stack {
     const subnet = new Subnet(vpc.vpc);
     subnet.createResources(this, props);
 
-    const igw = new InternetGateway(vpc.vpc);
-    igw.createResources(this, props);
+    const internetGateway = new InternetGateway(vpc.vpc);
+    internetGateway.createResources(this, props);
 
-    const ngw = new ElasticIp();
-    ngw.createResources(this, props)
+    const elasticIp = new ElasticIp();
+    elasticIp.createResources(this, props);
+
+    const natGateway = new NatGateway(subnet.public1a, subnet.public1c, elasticIp.ngw1a, elasticIp.ngw1c);
+    natGateway.createResources(this, props);
   }
 }
