@@ -5,6 +5,7 @@ import { Subnet } from './resource/subnet';
 import { InternetGateway } from './resource/internetGateway';
 import { ElasticIp } from './resource/elasticIp';
 import { NatGateway } from './resource/natGateway';
+import { RouteTable } from './resource/routetable';
 
 export class DemoStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -24,5 +25,15 @@ export class DemoStack extends Stack {
 
     const natGateway = new NatGateway(subnet.public1a, subnet.public1c, elasticIp.ngw1a, elasticIp.ngw1c);
     natGateway.createResources(this, props);
+
+    const routeTable = new RouteTable(
+      vpc.vpc,
+      subnet.public1a,subnet.public1c,
+      subnet.app1a, subnet.app1c,
+      subnet.db1a, subnet.db1c,
+      internetGateway.igw,
+      natGateway.ngw1a, natGateway.ngw1c
+    );
+    routeTable.createResources(this, props);
   }
 }
