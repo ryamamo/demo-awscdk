@@ -6,6 +6,7 @@ import { InternetGateway } from './resource/internetGateway';
 import { ElasticIp } from './resource/elasticIp';
 import { NatGateway } from './resource/natGateway';
 import { RouteTable } from './resource/routetable';
+import { NetworkAcl } from './resource/networkAcl';
 
 export class DemoStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -35,5 +36,13 @@ export class DemoStack extends Stack {
       natGateway.ngw1a, natGateway.ngw1c
     );
     routeTable.createResources(this, props);
+
+    const networkAcl = new NetworkAcl(
+      vpc.vpc,
+      subnet.public1a,subnet.public1c,
+      subnet.app1a, subnet.app1c,
+      subnet.db1a, subnet.db1c,
+    );
+    networkAcl.createResources(this, props);
   }
 }
