@@ -2,8 +2,6 @@ import { CfnInstanceProfile, CfnRole, Effect, PolicyDocument, PolicyStatement, P
 import { Construct } from 'constructs';
 import { StackProps } from 'aws-cdk-lib';
 import { Resource } from "./abstract/resource";
-import { assert } from "console";
-
 
 interface ResourceInfo {
     readonly id: string;
