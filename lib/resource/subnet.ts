@@ -60,7 +60,7 @@ export class Subnet extends Resource {
         cidrBlock: '10.0.22.0/24',
         availabilityZone: 'ap-northeast-1c',
         resourceName: 'subnet-db-1c',
-        assign: subnet => this.db1a = subnet
+        assign: subnet => this.db1c = subnet
     }]
 
     constructor(vpc: CfnVPC) {
