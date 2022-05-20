@@ -78,7 +78,7 @@ export class RouteTable extends Resource {
             routes: [{
                 id: 'RouteApp1c',
                 destinationCidrBlock: '0.0.0.0/0',
-                gatewayId: () => this.natGateway1c.ref
+                natGatewayId: () => this.natGateway1c.ref
             }],
             associations: [{
                 id: 'AssociationApp1c',

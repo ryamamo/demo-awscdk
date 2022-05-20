@@ -7,6 +7,8 @@ import { ElasticIp } from './resource/elasticIp';
 import { NatGateway } from './resource/natGateway';
 import { RouteTable } from './resource/routetable';
 import { NetworkAcl } from './resource/networkAcl';
+import { IamRole } from './resource/iamRole';
+import { SecurityGroup } from './resource/securityGroup';
 
 export class DemoStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -44,5 +46,11 @@ export class DemoStack extends Stack {
       subnet.db1a, subnet.db1c,
     );
     networkAcl.createResources(this, props);
+
+    const iamRole = new IamRole();
+    iamRole.createResources(this, props);
+
+    const securityGroup = new SecurityGroup(vpc.vpc);
+    securityGroup.createResources(this, props);
   }
 }
