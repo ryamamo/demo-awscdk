@@ -9,6 +9,7 @@ import { RouteTable } from './resource/routetable';
 import { NetworkAcl } from './resource/networkAcl';
 import { IamRole } from './resource/iamRole';
 import { SecurityGroup } from './resource/securityGroup';
+import { Ec2 } from './resource/ec2';
 
 export class DemoStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -52,5 +53,12 @@ export class DemoStack extends Stack {
 
     const securityGroup = new SecurityGroup(vpc.vpc);
     securityGroup.createResources(this, props);
+
+    const ec2 = new Ec2(
+      subnet.app1a, subnet.app1c,
+      iamRole.instanceProfileEc2,
+      securityGroup.ec2Sg
+    );
+    ec2.createResources(this, props);
   }
 }
