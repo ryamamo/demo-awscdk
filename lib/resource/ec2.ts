@@ -36,7 +36,7 @@ export class Ec2 extends Resource {
             availabilityZone: 'ap-northeast-1c',
             resourceName: 'ec2-1c',
             subnetId: () => this.subnetApp1c.ref,
-            assign: instance => this.instance1a = instance
+            assign: instance => this.instance1c = instance
         }
     ];
 
