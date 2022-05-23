@@ -10,6 +10,7 @@ import { NetworkAcl } from './resource/networkAcl';
 import { IamRole } from './resource/iamRole';
 import { SecurityGroup } from './resource/securityGroup';
 import { Ec2 } from './resource/ec2';
+import { ApplicationLoadBalancer } from './resource/applicationLoadBalancer';
 
 export class DemoStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -60,5 +61,14 @@ export class DemoStack extends Stack {
       securityGroup.ec2Sg
     );
     ec2.createResources(this, props);
+
+    const alb = new ApplicationLoadBalancer(
+      vpc.vpc,
+      subnet.public1a, subnet.public1c,
+      securityGroup.albSg,
+      ec2.instance1a, ec2.instance1c,
+    );
+    alb.createResources(this, props);
+
   }
 }
