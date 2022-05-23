@@ -11,6 +11,7 @@ import { IamRole } from './resource/iamRole';
 import { SecurityGroup } from './resource/securityGroup';
 import { Ec2 } from './resource/ec2';
 import { ApplicationLoadBalancer } from './resource/applicationLoadBalancer';
+import { OsecretKey, SecretsManager } from './resource/secretsManager';
 
 export class DemoStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -70,5 +71,10 @@ export class DemoStack extends Stack {
     );
     alb.createResources(this, props);
 
+    const secretsManager = new SecretsManager();
+    secretsManager.createResources(this, props);
+
+    const masterUsername = SecretsManager.getDynamicReference(secretsManager.rdsClusterSecret, OsecretKey.MasterUsername);
+    const masterUserPassword = SecretsManager.getDynamicReference(secretsManager.rdsClusterSecret, OsecretKey.MasterUserPassword);
   }
 }
