@@ -12,6 +12,7 @@ import { SecurityGroup } from './resource/securityGroup';
 import { Ec2 } from './resource/ec2';
 import { ApplicationLoadBalancer } from './resource/applicationLoadBalancer';
 import { OsecretKey, SecretsManager } from './resource/secretsManager';
+import { Rds } from './resource/rds';
 
 export class DemoStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -76,5 +77,14 @@ export class DemoStack extends Stack {
 
     const masterUsername = SecretsManager.getDynamicReference(secretsManager.rdsClusterSecret, OsecretKey.MasterUsername);
     const masterUserPassword = SecretsManager.getDynamicReference(secretsManager.rdsClusterSecret, OsecretKey.MasterUserPassword);
+
+    const rds = new Rds(
+      subnet.db1a, subnet.db1c,
+      securityGroup.rdsSg,
+      secretsManager.rdsClusterSecret,
+      iamRole.rdsRole
+    );
+    rds.createResources(this, props);
+
   }
 }
