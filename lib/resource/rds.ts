@@ -4,7 +4,7 @@ import { CfnDBCluster, CfnDBClusterParameterGroup, CfnDBInstance, CfnDBParameter
 import { Construct } from 'constructs';
 import { Resource } from './abstract/resource';
 import { CfnSecret } from 'aws-cdk-lib/aws-secretsmanager';
-import { OsecretKey, SecretsManager } from './secretsManager';
+import { OSecretKey, SecretsManager } from './secretsManager';
 import { CfnRole } from 'aws-cdk-lib/aws-iam';
 
 interface RdsInstanceInfo {
@@ -67,7 +67,7 @@ export class Rds extends Resource {
         this.dbCluster = this.createCluster(scope, subnetGroup, clusterParameterGroup, props);
 
         for (const instanceInfo of this.instances) {
-            const instance = this.createInstance(scope, instanceInfo, this.dbCluster, subnetGroup, parameterGroup);
+            const instance = this.createInstance(scope, instanceInfo, this.dbCluster, subnetGroup, parameterGroup, props);
             instanceInfo.assign(instance);
         }
     }
@@ -88,7 +88,7 @@ export class Rds extends Resource {
             parameters: { time_zone: 'UTC'}
         });
 
-        return clusterParameterGroup
+        return clusterParameterGroup;
     }
 
     private createParameterGroup(scope: Construct): CfnDBParameterGroup {
@@ -107,7 +107,7 @@ export class Rds extends Resource {
         props?: StackProps
         ): CfnDBCluster {
             const cluster = new CfnDBCluster(scope, 'RdsDbCluster', {
-                engine: 'aurora-mysql',
+                engine: Rds.engine,
                 backupRetentionPeriod: 7,
                 databaseName: Rds.databaseName,
                 dbClusterIdentifier: this.createResourceName(scope, 'rds-cluster', props),
@@ -116,8 +116,8 @@ export class Rds extends Resource {
                 enableCloudwatchLogsExports: ['error'],
                 engineMode: 'provisioned',
                 engineVersion: '5.7.mysql_aurora.2.10.0',
-                masterUsername: SecretsManager.getDynamicReference(this.secretRdsCluster, OsecretKey.MasterUsername),
-                masterUserPassword: SecretsManager.getDynamicReference(this.secretRdsCluster, OsecretKey.MasterUserPassword),
+                masterUserPassword: SecretsManager.getDynamicReference(this.secretRdsCluster, OSecretKey.MasterUserPassword),
+                masterUsername: SecretsManager.getDynamicReference(this.secretRdsCluster, OSecretKey.MasterUsername),
                 port: 3306,
                 preferredBackupWindow: '19:00-19:30',
                 preferredMaintenanceWindow: 'sun:19:30-sun:20:00',
