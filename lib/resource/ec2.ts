@@ -3,6 +3,7 @@ import { CfnInstance, CfnSubnet, CfnSecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import { CfnInstanceProfile } from "aws-cdk-lib/aws-iam";
 import { Construct } from 'constructs';
 import { Resource } from "./abstract/resource";
+import * as fs from 'fs';
 
 
 interface ResourceInfo {
@@ -10,6 +11,7 @@ interface ResourceInfo {
     readonly availabilityZone: string;
     readonly resourceName: string;
     readonly subnetId: () => string;
+    readonly userData?: string;
     readonly assign: (instance: CfnInstance) => void;
 }
 
@@ -19,6 +21,8 @@ export class Ec2 extends Resource {
 
     private static readonly latetImageIdAmazonLinux2 = 'ami-06631ebafb3ae5d34';
     private static readonly instanceType = 't2.micro';
+
+    private readonly userDataPath = `${__dirname}/../scripts/ec2UserData.sh`;
     private readonly subnetApp1a: CfnSubnet;
     private readonly subnetApp1c: CfnSubnet;
     private readonly instanceProfileEc2: CfnInstanceProfile;
@@ -28,6 +32,7 @@ export class Ec2 extends Resource {
             id: 'Ec2Instance1a',
             availabilityZone: 'ap-northeast-1a',
             resourceName: 'ec2-1a',
+            userData: this.userDataPath,
             subnetId: () => this.subnetApp1a.ref,
             assign: instance => this.instance1a = instance
         },
@@ -35,6 +40,7 @@ export class Ec2 extends Resource {
             id: 'Ec2Instance1c',
             availabilityZone: 'ap-northeast-1c',
             resourceName: 'ec2-1c',
+            userData: this.userDataPath,
             subnetId: () => this.subnetApp1c.ref,
             assign: instance => this.instance1c = instance
         }
@@ -70,6 +76,10 @@ export class Ec2 extends Resource {
             subnetId: resourceInfo.subnetId(),
             tags: [{ key: 'Name', value: this.createResourceName(scope, resourceInfo.resourceName, props)}]
         });
+
+        if (resourceInfo.userData) {
+            instance.userData = fs.readFileSync(resourceInfo.userData, 'base64')
+        };
 
         return instance;
     }

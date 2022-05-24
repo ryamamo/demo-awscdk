@@ -4,11 +4,11 @@ import { Construct } from "constructs";
 import { Resource } from './abstract/resource';
 
 
-export const OsecretKey = {
+export const OSecretKey = {
     MasterUsername: 'MasterUsername',
     MasterUserPassword: 'MasterUserPassword'
 } as const;
-type SecretKey = typeof OsecretKey[keyof typeof OsecretKey];
+type SecretKey = typeof OSecretKey[keyof typeof OSecretKey];
 
 interface ResourceInfo {
     readonly id: string;
@@ -27,9 +27,9 @@ export class SecretsManager extends Resource {
         description: 'for RDS cluster',
         generateSecretString: {
             excludeCharacters: '"@/\\\'',
-            generateStringKey: OsecretKey.MasterUserPassword,
+            generateStringKey: OSecretKey.MasterUserPassword,
             passwordLength: 16,
-            secretStringTemplate: `{"${OsecretKey.MasterUsername}": "${SecretsManager.rdsClusterMasterUsername}"}`
+            secretStringTemplate: `{"${OSecretKey.MasterUsername}": "${SecretsManager.rdsClusterMasterUsername}"}`
         },
         resourceName: 'secrets-rds-cluster',
         assgin: secret => this.rdsClusterSecret = secret
@@ -44,12 +44,10 @@ export class SecretsManager extends Resource {
             const secret = this.createSecret(scope, resourceInfo, props);
             resourceInfo.assgin(secret);
         }
-
-
     }
 
     public static getDynamicReference(secret: CfnSecret, secretKey: SecretKey): string {
-        return `{{resolve:secretmanager:${secret.ref}:SecretString:${secretKey}}}`
+        return `{{resolve:secretsmanager:${secret.ref}:SecretString:${secretKey}}}`
     }
 
     private createSecret(scope: Construct, resourceInfo: ResourceInfo, props?: StackProps): CfnSecret {
