@@ -15,9 +15,12 @@ import { OSecretKey, SecretsManager } from './resource/secretsManager';
 import { Rds } from './resource/rds';
 
 export class DemoStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  public static ec2KeyName?: string;
+
+  constructor(scope: Construct, id: string, ec2KeyName?: string, props?: StackProps) {
     super(scope, id, props);
-    
+    DemoStack.ec2KeyName = ec2KeyName;
+
     const vpc = new Vpc();
     vpc.createResources(this, props);
 
@@ -60,7 +63,7 @@ export class DemoStack extends Stack {
     const ec2 = new Ec2(
       subnet.app1a, subnet.app1c,
       iamRole.instanceProfileEc2,
-      securityGroup.ec2Sg
+      securityGroup.ec2Sg,
     );
     ec2.createResources(this, props);
 
@@ -82,6 +85,5 @@ export class DemoStack extends Stack {
       iamRole.rdsRole
     );
     rds.createResources(this, props);
-
   }
 }
