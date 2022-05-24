@@ -4,6 +4,7 @@ import { CfnInstanceProfile } from "aws-cdk-lib/aws-iam";
 import { Construct } from 'constructs';
 import { Resource } from "./abstract/resource";
 import * as fs from 'fs';
+import { DemoStack } from '../demo-stack';
 
 
 interface ResourceInfo {
@@ -50,13 +51,13 @@ export class Ec2 extends Resource {
         subnetApp1a: CfnSubnet,
         subnetApp1c: CfnSubnet,
         instanceProfileEc2: CfnInstanceProfile,
-        securityGroupEc2: CfnSecurityGroup
+        securityGroupEc2: CfnSecurityGroup,
     ) {
         super();
         this.subnetApp1a = subnetApp1a;
         this.subnetApp1c = subnetApp1c;
-        this.instanceProfileEc2 = instanceProfileEc2
-        this.securityGroupEc2 = securityGroupEc2
+        this.instanceProfileEc2 = instanceProfileEc2;
+        this.securityGroupEc2 = securityGroupEc2;
     };
 
     createResources(scope: Construct, props?: StackProps | undefined): void {
@@ -76,6 +77,10 @@ export class Ec2 extends Resource {
             subnetId: resourceInfo.subnetId(),
             tags: [{ key: 'Name', value: this.createResourceName(scope, resourceInfo.resourceName, props)}]
         });
+
+        if (DemoStack.ec2KeyName) {
+            instance.keyName = DemoStack.ec2KeyName;
+        };
 
         if (resourceInfo.userData) {
             instance.userData = fs.readFileSync(resourceInfo.userData, 'base64')

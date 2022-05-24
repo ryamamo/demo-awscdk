@@ -33,6 +33,7 @@
     ],
 
     "projectName": "demo",
-    "envType": "stg"
+    "envType": "stg",
+    "keyName": ""
   }
 }
